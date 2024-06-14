@@ -26,15 +26,15 @@ async def text_to_mp3_command(update: Update, context: CallbackContext):
 
 async def convert_text_to_audio(update: Update, context: CallbackContext):
     message = update.message.text
-    
+
     # Convertir el texto a voz
-    tts = gTTS(message, lang='es', tld='es', slow=False)
+    tts = gTTS(message, lang='es', tld='es')
     audio_path = 'text_to_audio.mp3'
     tts.save(audio_path)
-    
+
     # Enviar el archivo de audio al usuario
     await update.message.reply_audio(audio=open(audio_path, 'rb'))
-    
+
     # Eliminar el archivo de audio después de procesarlo
     os.remove(audio_path)
     return ConversationHandler.END
@@ -52,12 +52,12 @@ async def message_handler(update: Update, context: CallbackContext):
         if BOT_USERNAME in text:
             new_text: str = text.replace(BOT_USERNAME, '').strip()
             response: str = handle_responses(new_text)
-        else: 
+        else:
              return
-    
+
     else:
         response: str = handle_responses(text)
-    
+
     print(f'Bot: {response}')
     await update.message.reply_text(response)
 
@@ -66,21 +66,21 @@ async def pdf_handler(update: Update, context: CallbackContext):
     if document.mime_type == 'application/pdf':
         file = await context.bot.get_file(document.file_id)
         file_path = f'downloads/{document.file_name}'
-        
+
         # Asegúrate de que el directorio de descargas existe
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        
+
         await file.download_to_drive(file_path)
         text = extract_text_from_pdf(file_path)
-        
+
         # Convertir el texto a voz
         tts = gTTS(text, lang='es')
         audio_path = f'{file_path}.mp3'
         tts.save(audio_path)
-        
+
         # Enviar el archivo de audio al usuario
         await update.message.reply_audio(audio=open(audio_path, 'rb'))
-        
+
         # Eliminar el archivo descargado y el archivo de audio después de procesarlo
         os.remove(file_path)
         os.remove(audio_path)
