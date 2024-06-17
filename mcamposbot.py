@@ -4,6 +4,8 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import fitz  # PyMuPDF
 import os
 from gtts import gTTS
+import threading
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 TOKEN: final = '7385014817:AAH2GHV4d-zJzMem1oVGBymEWnQhSACCOxo'
 BOT_USERNAME: final = '@el_inteligente_bot'
@@ -97,7 +99,16 @@ def extract_text_from_pdf(file_path: str) -> str:
 async def error_handler(update: Update, context: CallbackContext):
     print(f'Update: {update} caused error: {context.error}')
 
+def run_http_server():
+    handler = SimpleHTTPRequestHandler
+    httpd = HTTPServer(('0.0.0.0', 8000), handler)
+    print("Starting http server on port 8000")
+    httpd.serve_forever()
+
 if __name__ == '__main__':
+    # Start the HTTP server in a separate thread
+    threading.Thread(target=run_http_server, daemon=True).start()
+
     app = Application.builder().token(TOKEN).build()
 
     # Commands
