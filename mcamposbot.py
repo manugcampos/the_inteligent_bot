@@ -6,9 +6,13 @@ import os
 from gtts import gTTS
 import threading
 from http.server import SimpleHTTPRequestHandler, HTTPServer
+from dotenv import load_dotenv
 
-TOKEN: final = '7385014817:AAH2GHV4d-zJzMem1oVGBymEWnQhSACCOxo'
-BOT_USERNAME: final = '@el_inteligente_bot'
+# Cargar variables de entorno
+load_dotenv()
+
+TOKEN: final = os.getenv('TOKEN')
+BOT_USERNAME: final = os.getenv('BOT_USERNAME')
 
 TEXT_TO_AUDIO = range(1)
 
